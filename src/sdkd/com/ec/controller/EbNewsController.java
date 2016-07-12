@@ -24,12 +24,11 @@ public class EbNewsController extends HttpServlet {
         String judge = request.getParameter("judge");
 
 
-
         if("list".equals(judge)){
-            List(request,response);
-        }else if("single".equals(judge)){
-            int id = Integer.parseInt(request.getParameter("id"));
-            singleNew(request,response,id);
+
+        }else if("detail".equals(judge)){
+
+            singleNew(request,response);
         }else{
             List(request,response);
         }
@@ -42,8 +41,14 @@ public class EbNewsController extends HttpServlet {
         request.setAttribute("newList",list);
         request.getRequestDispatcher("/action1").forward(request,response);
     }
-    public void singleNew(HttpServletRequest request, HttpServletResponse response,int id) throws ServletException, IOException {
+    public void singleNew(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String paramsId = request.getParameter("id");
+        int id = 0;
+        if(paramsId!=null && !"".equals(paramsId)){
+            id = Integer.valueOf(paramsId);
+        }
         EbNews ebNews = newsDao.getNewsById(id);
+        request.setAttribute("news",ebNews);
         request.getRequestDispatcher("/news-view.jsp").forward(request,response);
     }
 }
