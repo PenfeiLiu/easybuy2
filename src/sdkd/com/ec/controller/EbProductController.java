@@ -1,7 +1,7 @@
 package sdkd.com.ec.controller;
 
 import sdkd.com.ec.dao.impl.EbProductDao;
-import sdkd.com.ec.model.EbDirectory;
+import sdkd.com.ec.model.EbPages;
 import sdkd.com.ec.model.EbProduct;
 
 import javax.servlet.ServletException;
@@ -46,8 +46,9 @@ public class EbProductController extends HttpServlet {
     private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         String pageIndexParam = request.getParameter("pageIndex");
         String pageSizeParam = request.getParameter("pageSize");
-        int pageIndex  = 1;
-        int pageSize = 2;
+        EbPages pages = new EbPages();
+        int pageIndex = 1;
+        int pageSize =2;
         if(pageIndexParam!=null && !"".equals(pageIndexParam)){
             pageIndex = Integer.parseInt(pageIndexParam);
         }
@@ -55,16 +56,20 @@ public class EbProductController extends HttpServlet {
             pageSize = Integer.valueOf(pageSizeParam);
         }
         List<EbProduct> productList = productDao.getProductPager(pageIndex,pageSize);
+
         int count = productDao.getProductCount();
+        int totalPage = ((count%pageSize==0)?(count/pageSize):(count/pageSize+1));
 
+        pages.setTotalPage(totalPage);
+        pages.setPageSize(pageSize);
+        pages.setPageIndex(pageIndex);
         request.setAttribute("productList",productList);
-        request.setAttribute("count",count);  //总记录数
-
+        request.setAttribute("pageIndex",pageIndex);  //总记录数
+        request.setAttribute("pages",pages);
         List<Integer> countList = new ArrayList<Integer>();
-        for(int i = 1;i<=(count/pageSize);i++) {
-            countList.add(count);
-        }
-        request.setAttribute("countList",countList);
+
+        request.setAttribute("totalPage",totalPage);
+
 
         //跳转页面
         request.getRequestDispatcher("/product-list.jsp").forward(request,response);

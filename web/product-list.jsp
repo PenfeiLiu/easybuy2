@@ -97,13 +97,23 @@
 			<h2>全部商品</h2>
 			<div class="pager">
 				<ul class="clearfix">
-					<li><a href="/action4?action=list&pageIndex=2&pageSize=2">上一页</a></li>
-
-					<c:forEach var="count" items="${countList}" varStatus="status">
-						<li><a href="/product-view.jsp">${status.count}</a></li>
+					<c:if test="${pageIndex-1!=0}">
+						<li><a href="/action4?action=list&pageIndex=${pageIndex-1}">上一页</a></li>
+					</c:if>
+					<c:forEach var="page"  begin="1" end="${totalPage}">
+						<c:if test="${page==1}">
+							<li><a href="/action4?action=list&pageIndex=1">首页</a></li>
+						</c:if>
+						<c:if test="${page!=1&&page!=totalPage}">
+							<li><a href="/action4?action=list&pageIndex=${page}">${page}</a></li>
+						</c:if>
+						<c:if test="${page==totalPage}">
+							<li><a href="/action4?action=list&pageIndex=${totalPage}">末页</a></li>
+						</c:if>
 					</c:forEach>
-
-					<li><a href="/action4?action=list&pageIndex=2&pageSize=2">下一页</a></li>
+					<c:if test="${pageIndex+1<=totalPage}">
+						<li><a href="/action4?action=list&pageIndex=${pageIndex+1}">下一页</a></li>
+					</c:if>
 				</ul>
 			</div>
 			<div class="clear"></div>
